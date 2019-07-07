@@ -10,10 +10,10 @@ console.log("Server starting");
 http.createServer(function (req, res) {
 	count++;
 	console.log("Request Count: %d", count);
-	
+
 	var q = url.parse(req.url, true);
 	var filename = "." + q.pathname;
-  
+
 	if (req.url == '/fileupload') {
 		console.log("Fileupload requested");
 		var form = new formidable.IncomingForm();
@@ -27,20 +27,20 @@ http.createServer(function (req, res) {
 			});
 		});
 	}
-  
+
 	else {
 		fs.readFile(filename, function(err, data) {
 		if (err) {
 			console.log("404 Error ocurred");
 			res.writeHead(404, {'Content-Type': 'text/html'});
 			return res.end("404 Not Found");
-		}  
+		}
     res.writeHead(200, {'Content-Type': 'text/html'});
     var n = data.indexOf("|a|");
     data[n+1] = count+48;
     res.write(data);
     res.write("</br>");
-    
+
     if (req.url == "/test.html") {
 		console.log("test.html requested");
 		res.write('<form action="fileupload" method="post" enctype="multipart/form-data">');
@@ -48,9 +48,9 @@ http.createServer(function (req, res) {
 		res.write('<input type="submit">');
 		res.write('</form>');
 	}
-    
+
     return res.end();
   });
-  
+
 }
 }).listen(8080);
