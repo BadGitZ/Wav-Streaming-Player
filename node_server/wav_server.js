@@ -1,7 +1,12 @@
+// WAV Streaming Player Server
+// Handles .wav files and sends them to an ESP8266
+//Author Stefan Schmolke 2019
+
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
 var formidable = require('formidable');
+var path = require('path');
 
 var count = 0;
 
