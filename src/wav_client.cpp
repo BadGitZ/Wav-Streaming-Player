@@ -5,11 +5,11 @@
 #include <ESP8266HTTPClient.h>
 
 /* Set these to your desired credentials. */
-const char *ssid = "garten5";
-const char *password = "XenoKrates";
+const char *ssid = "Stefansinkt";
+const char *password = "Geheim1!";
 
 //Web/Server address to read/write from
-const char *host = "192.168.5.68";
+const char *host = "192.168.137.11";
 
 int toggle = 0;
 int command = 0;
@@ -52,7 +52,7 @@ void loop() {
   HTTPClient http;    //Declare object of class HTTPClient
   String Link;
 
-  Link = "http://192.168.5.68:8080/riff";
+  Link = "http://192.168.137.11:8080/test.html";
 
 //  if (Serial.available() > 0) {
 
