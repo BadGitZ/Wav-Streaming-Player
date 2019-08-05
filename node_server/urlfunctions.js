@@ -11,8 +11,10 @@ exports.urlGen = function(size) {
   return result;
 }
 
-exports.errorResponse = function(res) {
-  console.log("404 Error ocurred");
-	res.writeHead(404, {'Content-Type': 'text/html'});
-	return res.end("404 Not Found");
+exports.simplePow = function(a, b) {
+  var c = a;
+  for (var i = 0; i < b; i++) {
+    a *= c;
+  }
+  return a;
 }

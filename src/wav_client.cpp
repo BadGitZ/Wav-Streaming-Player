@@ -4,22 +4,33 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
 
+#define FILEPIN 2
+#define HELLOPIN 16
+#define FILECOUNT 1
+
+HTTPClient http;    //Declare object of class HTTPClient
+
 /* Set these to your desired credentials. */
-const char *ssid = "Stefansinkt";
-const char *password = "Geheim1!";
+const char *ssid = "GitzNet";
+const char *password = "MoIstNeFagit666";
 
 //Web/Server address to read/write from
-const char *host = "192.168.137.11";
+const String host = "192.168.43.161:8080";
+
+const String linkBase = "http://" + host;
 
 int toggle = 0;
-int command = 0;
 
 //=======================================================================
-//                    Power on setup
+//                    Power On Setup
 //=======================================================================
 
 void setup() {
+
   pinMode(0, OUTPUT);
+  pinMode(FILEPIN, INPUT);
+  pinMode(HELLOPIN, INPUT);
+
   delay(1000);
   Serial.begin(115200);
   WiFi.mode(WIFI_OFF);        //Prevents reconnection issue (taking too long to connect)
@@ -45,33 +56,82 @@ void setup() {
 }
 
 //=======================================================================
+//                    HTTP Request Function
+//=======================================================================
+
+String HttpGET(String Link) {
+
+  http.begin(Link);     //Specify request destination
+  int httpCode = http.GET();            //Send the request
+  String payload = http.getString();
+
+  Serial.println(httpCode);   //Print HTTP return code
+
+  if (httpCode != 200)
+    Serial.println("Server Connection Error");
+
+  Serial.println(payload);
+
+       //Close connection
+  http.end();
+
+  return payload;
+}
+
+//=======================================================================
+//                    Serial Commands And Files Function
+//=======================================================================
+
+String SerialCommands() {
+  if (Serial.available() > 0) {
+    String command;
+    command = Serial.read();
+    Serial.println(command);
+    return command;
+  }
+  return "0";
+}
+
+//=======================================================================
+//                    Get File Names Function
+//=======================================================================
+
+void getFiles() {
+
+    String Link;
+
+    Link = linkBase + "/soundfiles";
+    String filePayload = HttpGET(Link);
+    String Files;
+    int indexWav = 0;
+    for (int i{0}; i <= (filePayload[FILECOUNT]-1); i++) {
+      int index = filePayload.indexOf(">", indexWav);
+      indexWav = filePayload.indexOf(".wav", index);
+      for (int j{index+1}; j < indexWav; j++) {
+        Files += filePayload[j];
+      }
+      Files += ",";
+    }
+
+    Serial.println(Files);
+}
+
+//=======================================================================
 //                    Main Program Loop
 //=======================================================================
+
 void loop() {
 
-  HTTPClient http;    //Declare object of class HTTPClient
-  String Link;
+  //Link = "http://192.168.43.161:8080/data/evGLMKfu";
+  //Link = "http://192.168.43.161:8080/data/sXGXnJ6f";
 
-  Link = "http://192.168.137.11:8080/test.html";
+  if (digitalRead(FILEPIN)) {
+    getFiles();
+  }
 
-//  if (Serial.available() > 0) {
-
-//    command = Serial.read();
-//    Serial.println(command);
-//    if (command == 53) {
-
-      http.begin(Link);     //Specify request destination
-      int httpCode = http.GET();            //Send the request
-      String payload = http.getString();
-
-      Serial.println(httpCode);   //Print HTTP return code
-
-      if (httpCode != 200)
-        Serial.println("Server Connection Error");
-        Serial.println(payload);
-
-        //Close connection
-       http.end();
+  else {
+    Serial.println("nothing done");
+  }
 //    }
 //  }
 
