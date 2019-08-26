@@ -128,6 +128,7 @@ else if (req.url.startsWith("/data")) {
 
 				for (var i = 0x2C+fileCounter-10000; i < (0x2C+fileCounter); i++) {
 					res.write(String.fromCharCode(data[i]));
+							//String.fromCharCode
 				}
 				res.end();
 		});
