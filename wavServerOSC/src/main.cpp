@@ -27,15 +27,12 @@
 // WiFi stuff
 const char* ssid = "GitzNet";
 const char* pwd = "GitzNet321";
-const IPAddress ip(192, 168, 1, 201);
-const IPAddress gateway(192, 168, 1, 1);
-const IPAddress subnet(255, 255, 255, 0);
 static int ledToggle = 1;
 static bool getMode = false;
 
 // for ArduinoOSC
 OscWiFi osc;
-const char* host = "192.168.43.236";
+const char* host = "192.168.43.126";
 const int recv_port = 8888;
 const int send_port = 9999;
 
@@ -133,7 +130,7 @@ void setup()
     {
       Serial.println(m.arg<int>(1));
       if (m.arg<int>(1) == 0xff10ff) {
-        Serial.println("Everything Ready");
+        Serial.println("FFFFFFFF"); //32 BIT Zahl als Ascii
       }
     });
 
@@ -164,9 +161,18 @@ void setup()
 
     osc.subscribe("/info", [](OscMessage& m){
       if (getMode) {
+        /*
         Serial.println(m.arg<int>(0));
         Serial.println(m.arg<int>(1));
         Serial.println(m.arg<int>(2));
+        */
+        char info[8];
+        if (m.arg<int>(1) < 16) {
+          sprintf(info, "%X0%X0%X", m.arg<int>(0), m.arg<int>(1), m.arg<int>(2));
+        }
+        else
+          sprintf(info, "%X%X0%X", m.arg<int>(0), m.arg<int>(1), m.arg<int>(2));
+        Serial.println(info);
       }
     });
 

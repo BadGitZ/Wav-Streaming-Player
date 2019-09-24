@@ -120,17 +120,17 @@ getFileData = function(filename) {
             bytesToSend += data[j].toString(16);
         }
         udpPort.send({address: "/data", args: [{type : "s", value: bytesToSend}]}, hostAddress, hostPort);
-        
+        console.log("File Data Send");
     }
     });
    // udpPort.send({address: "/end", args: [{type : "i", value: 1}]}, hostAddress, hostPort);
-   console.log("File Data Send");
+   
 }
 
 
 // Create an osc.js UDP Port listening on port 9999.
 var udpPort = new osc.UDPPort({
-    localAddress: "192.168.43.236",
+    localAddress: "192.168.43.126",
     localPort: 9999,
     metadata: true
 });
